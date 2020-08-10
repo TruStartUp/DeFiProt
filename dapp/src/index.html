@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Simple Dapp</title>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+    
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+      <a class="navbar-brand" href="#" onclick="pages.goTo('home')">DeFi Dapp</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active" id="item_home">
+            <a class="nav-link" href="#" onclick="pages.goTo('home')">Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item" id="item_assets">
+            <a class="nav-link" href="#" onclick="pages.goTo('assets')">Assets</a>
+          </li>
+          <li class="nav-item" id="item_markets">
+            <a class="nav-link" href="#" onclick="pages.goTo('markets')">Markets</a>
+          </li>
+          <li class="nav-item" id="item_positions">
+            <a class="nav-link" href="#" onclick="pages.goTo('positions')">Positions</a>
+          </li>
+          <li class="nav-item" id="item_liquidities">
+            <a class="nav-link" href="#" onclick="pages.goTo('liquidities')">Liquidities</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    
+    <div id="page_home" style="display:none">
+      <div class="jumbotron">
+        <h1>DeFi Demo DApp</h1>
+        <p class="lead">This example is a quick exercise to illustrate how DeFi works</p>
+        <a class="btn btn-lg btn-primary" href="/docs/4.4/components/navbar/" role="button">View docs &raquo;</a>
+      </div>
+    </div>
+
+    <div id="page_assets" style="display:none">
+      <div class="jumbotron container-fluid">
+        <h1>Assets</h1>
+        <div>
+        <table class="table table-striped" style="width: 60%">
+          <thead>
+            <tr>
+              <th scope="col">User</th>
+              <th scope="col">Asset</th>
+              <th scope="col">Balance</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td rowspan="4">root</td>
+              <td>RBTC</td>
+              <td align="right" id="balance_root_rbtc">0</td>
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td>TOK1</td>
+              <td align="right" id="balance_root_token1">0</td>
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td>TOK2</td>
+              <td align="right" id="balance_root_token2">0</td>
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td>TOK3</td>
+              <td align="right" id="balance_root_token3">0</td>
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td rowspan="4">alice</td>
+              <td>RBTC</td>
+              <td align="right" id="balance_alice_rbtc">0</td>
+              <td><button type="button" class="btn btn-primary btn-sm" onclick="fund('alice')">Fund</button></td>
+            </tr>
+            <tr>
+              <td>TOK1</td>
+              <td align="right" id="balance_alice_token1">0</td>
+              <td><button type="button" class="btn btn-primary btn-sm" onclick="allocate('alice', 'token1')">Allocate</button></td>
+            </tr>
+            <tr>
+              <td>TOK2</td>
+              <td align="right" id="balance_alice_token2">0</td>
+              <td><button type="button" class="btn btn-primary btn-sm">Allocate</button></td>
+            </tr>
+            <tr>
+              <td>TOK3</td>
+              <td align="right" id="balance_alice_token3">0</td>
+              <td><button type="button" class="btn btn-primary btn-sm">Allocate</button></td>
+            </tr>
+            <tr>
+              <td rowspan="4">bob</td>
+              <td>RBTC</td>
+              <td align="right" id="balance_bob_rbtc">0</td>
+              <td><button type="button" class="btn btn-primary btn-sm">Fund</button></td>
+            </tr>
+            <tr>
+              <td>TOK1</td>
+              <td align="right" id="balance_bob_token1">0</td>
+              <td><button type="button" class="btn btn-primary btn-sm">Allocate</button></td>
+            </tr>
+            <tr>
+              <td>TOK2</td>
+              <td align="right" id="balance_bob_token2">0</td>
+              <td><button type="button" class="btn btn-primary btn-sm">Allocate</button></td>
+            </tr>
+            <tr>
+              <td>TOK3</td>
+              <td align="right" id="balance_bob_token3">0</td>
+              <td><button type="button" class="btn btn-primary btn-sm">Allocate</button></td>
+            </tr>
+            <tr>
+              <td rowspan="4">charlie</td>
+              <td>RBTC</td>
+              <td align="right" id="balance_charlie_rbtc">0</td>
+              <td><button type="button" class="btn btn-primary btn-sm">Fund</button></td>
+            </tr>
+            <tr>
+              <td>TOK1</td>
+              <td align="right" id="balance_charlie_token1">0</td>
+              <td><button type="button" class="btn btn-primary btn-sm">Allocate</button></td>
+            </tr>
+            <tr>
+              <td>TOK2</td>
+              <td align="right" id="balance_charlie_token2">0</td>
+              <td><button type="button" class="btn btn-primary btn-sm">Allocate</button></td>
+            </tr>
+            <tr>
+              <td>TOK3</td>
+              <td align="right" id="balance_charlie_token3">0</td>
+              <td><button type="button" class="btn btn-primary btn-sm">Allocate</button></td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+    
+    <div id="page_markets" style="display:none">
+      <div class="jumbotron container-fluid">
+        <h1>Markets</h1>
+        <div>
+        <table class="table table-striped" style="width: 60%">
+          <thead>
+            <tr>
+              <th scope="col">Market</th>
+              <th scope="col">Asset</th>
+              <th scope="col">Supplies</th>
+              <th scope="col">Borrows</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Market 1</td>
+              <td>TOK1</td>
+              <td align="right" id="market1_supplies">0</td>
+              <td align="right" id="market1_borrows">0</td>
+            </tr>
+            <tr>
+              <td>Market 2</td>
+              <td>TOK2</td>
+              <td align="right" id="market2_supplies">0</td>
+              <td align="right" id="market2_borrows">0</td>
+            </tr>
+            <tr>
+              <td>Market 3</td>
+              <td>TOK3</td>
+              <td align="right" id="market3_supplies">0</td>
+              <td align="right" id="market3_borrows">0</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+    
+    <div id="page_positions" style="display:none">
+      <div class="jumbotron container-fluid">
+        <h1>Positions</h1>
+        <div>
+        <table class="table table-striped" style="width: 80%">
+          <thead>
+            <tr>
+              <th scope="col">User</th>
+              <th scope="col">Market</th>
+              <th scope="col">Asset</th>
+              <th scope="col">Supplies</th>
+              <th scope="col">Borrows</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td rowspan="3">alice</td>
+              <td>Market 1</td>
+              <td>TOK1</td>
+              <td align="right" id="alice_market1_supplies">0</td>
+              <td align="right" id="alice_market1_borrows">0</td>
+              <td>
+                <button type="button" class="btn btn-primary btn-sm">Lending</button>
+                <button type="button" class="btn btn-primary btn-sm">Redeem</button>
+                <button type="button" class="btn btn-primary btn-sm">Borrow</button>
+                <button type="button" class="btn btn-primary btn-sm">Pay</button>
+              </td>
+            </tr>
+            <tr>
+              <td>Market 2</td>
+              <td>TOK2</td>
+              <td align="right" id="alice_market2_supplies">0</td>
+              <td align="right" id="alice_market2_borrows">0</td>
+              <td>
+                <button type="button" class="btn btn-primary btn-sm">Lending</button>
+                <button type="button" class="btn btn-primary btn-sm">Redeem</button>
+                <button type="button" class="btn btn-primary btn-sm">Borrow</button>
+                <button type="button" class="btn btn-primary btn-sm">Pay</button>
+              </td>
+            </tr>
+            <tr>
+              <td>Market 3</td>
+              <td>TOK3</td>
+              <td align="right" id="alice_market3_supplies">0</td>
+              <td align="right" id="alice_market3_borrows">0</td>
+              <td>
+                <button type="button" class="btn btn-primary btn-sm">Lending</button>
+                <button type="button" class="btn btn-primary btn-sm">Redeem</button>
+                <button type="button" class="btn btn-primary btn-sm">Borrow</button>
+                <button type="button" class="btn btn-primary btn-sm">Pay</button>
+              </td>
+            </tr>
+            <tr>
+              <td rowspan="3">bob</td>
+              <td>Market 1</td>
+              <td>TOK1</td>
+              <td align="right" id="bob_market1_supplies">0</td>
+              <td align="right" id="bob_market1_borrows">0</td>
+              <td>
+                <button type="button" class="btn btn-primary btn-sm">Lending</button>
+                <button type="button" class="btn btn-primary btn-sm">Redeem</button>
+                <button type="button" class="btn btn-primary btn-sm">Borrow</button>
+                <button type="button" class="btn btn-primary btn-sm">Pay</button>
+              </td>
+            </tr>
+            <tr>
+              <td>Market 2</td>
+              <td>TOK2</td>
+              <td align="right" id="bob_market2_supplies">0</td>
+              <td align="right" id="bob_market2_borrows">0</td>
+              <td>
+                <button type="button" class="btn btn-primary btn-sm">Lending</button>
+                <button type="button" class="btn btn-primary btn-sm">Redeem</button>
+                <button type="button" class="btn btn-primary btn-sm">Borrow</button>
+                <button type="button" class="btn btn-primary btn-sm">Pay</button>
+              </td>
+            </tr>
+            <tr>
+              <td>Market 3</td>
+              <td>TOK3</td>
+              <td align="right" id="bob_market3_supplies">0</td>
+              <td align="right" id="bob_market3_borrows">0</td>
+              <td>
+                <button type="button" class="btn btn-primary btn-sm">Lending</button>
+                <button type="button" class="btn btn-primary btn-sm">Redeem</button>
+                <button type="button" class="btn btn-primary btn-sm">Borrow</button>
+                <button type="button" class="btn btn-primary btn-sm">Pay</button>
+              </td>
+            </tr>
+            <tr>
+              <td rowspan="3">charlie</td>
+              <td>Market 1</td>
+              <td>TOK1</td>
+              <td align="right" id="charlie_market1_supplies">0</td>
+              <td align="right" id="charlie_market1_borrows">0</td>
+              <td>
+                <button type="button" class="btn btn-primary btn-sm">Lending</button>
+                <button type="button" class="btn btn-primary btn-sm">Redeem</button>
+                <button type="button" class="btn btn-primary btn-sm">Borrow</button>
+                <button type="button" class="btn btn-primary btn-sm">Pay</button>
+              </td>
+            </tr>
+            <tr>
+              <td>Market 2</td>
+              <td>TOK2</td>
+              <td align="right" id="charlie_market2_supplies">0</td>
+              <td align="right" id="charlie_market2_borrows">0</td>
+              <td>
+                <button type="button" class="btn btn-primary btn-sm">Lending</button>
+                <button type="button" class="btn btn-primary btn-sm">Redeem</button>
+                <button type="button" class="btn btn-primary btn-sm">Borrow</button>
+                <button type="button" class="btn btn-primary btn-sm">Pay</button>
+              </td>
+            </tr>
+            <tr>
+              <td>Market 3</td>
+              <td>TOK3</td>
+              <td align="right" id="charlie_market3_supplies">0</td>
+              <td align="right" id="charlie_market3_borrows">0</td>
+              <td>
+                <button type="button" class="btn btn-primary btn-sm">Lending</button>
+                <button type="button" class="btn btn-primary btn-sm">Redeem</button>
+                <button type="button" class="btn btn-primary btn-sm">Borrow</button>
+                <button type="button" class="btn btn-primary btn-sm">Pay</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+    <div id="page_liquidities" style="display:none">
+      <div class="jumbotron container-fluid">
+        <h1>Liquidities</h1>
+        <div>
+        <table class="table table-striped" style="width: 40%">
+          <thead>
+            <tr>
+              <th scope="col">User</th>
+              <th scope="col">Liquidity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>alice</td>
+              <td align="right" id="alice_liquidity">0</td>
+            </tr>
+            <tr>
+              <td>bob</td>
+              <td align="right" id="bob_liquidity">0</td>
+            </tr>
+            <tr>
+              <td>charlie</td>
+              <td align="right" id="charlie_liquidity">0</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+    
+    <div class="modal fade" id="fundModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="fundModalLabel">Funding</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="modal fade" id="allocateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="allocateModalLabel">Allocating</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh" crossorigin="anonymous"></script>    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>  </body>
+    <script src="js/ethereumjs-tx-1.3.3.min.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+    pages.goTo('home');
+    refreshLoop();
+    
+function refreshLoop() {    
+    fetchValues();
+    
+    setTimeout(refreshLoop, 20000);
+}
+    
+function fetchValues() {
+    app.fetchBalances(processBalance);
+    app.fetchLiquidities(processLiquidity);
+    app.fetchMarkets(processMarket);
+    app.fetchPositions(processPosition);
+    
+    function processBalance(accountname, assetname, balance) {
+        $('#balance_' + accountname + '_' + assetname).text(balance);
+    }
+    
+    function processLiquidity(accountname, liquidity) {
+        $('#' + accountname + '_liquidity').text(liquidity);
+    }
+    
+    function processMarket(marketname, concept, value) {
+        $('#' + marketname + '_' + concept).text(value);
+    }
+    
+    function processPosition(accountname, marketname, concept, value) {
+        $('#' + accountname + '_' + marketname + '_' + concept).text(value);
+    }
+}
+
+function fund(accountname) {
+    $("#fundModal").find('.modal-title').text('Funding ' + accountname);
+    $("#fundModal").modal('show');
+}
+
+function allocate(accountname, tokenname) {
+    $("#allocateModal").find('.modal-title').text('Allocating ' + tokenname + ' to ' + accountname);
+    $("#allocateModal").modal('show');
+}
+    
+    </script>
+</html>
