@@ -1,0 +1,18 @@
+{
+  "name": "demodapp",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Token Bridge Demo Dapp",
+  "author": "",
+  "scripts": {
+    "preinstall": "npx npm-force-resolutions",
+    "dev": "lite-server"
+  },
+  "dependencies": {
+    "minimist": "^1.2.5",
+    "lite-server": "^2.5.4"
+  },
+  "resolutions": {
+    "minimist": "^1.2.5"
+  }
+}

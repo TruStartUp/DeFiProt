@@ -1,0 +1,23 @@
+{
+  "name": "defiprot",
+  "version": "0.0.1",
+  "description": "DeFi Protocol",
+  "main": "index.js",
+  "scripts": {
+    "preinstall": "npx npm-force-resolutions",
+    "test": "truffle test",
+    "compile": "truffle compile"
+  },
+  "keywords": [
+    "defi"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "minimist": "^1.2.5",
+    "truffle": "5.1.14"
+  },
+  "resolutions": {
+    "minimist": "^1.2.5"
+  }
+}
