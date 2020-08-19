@@ -22,7 +22,7 @@ contract Market is MarketInterface {
     uint public totalBorrows;
     uint public baseBorrowRate;
     uint public utilizationRateFraction;
-    
+
     uint public blocksPerYear;
 
     struct SupplySnapshot {
@@ -40,11 +40,11 @@ contract Market is MarketInterface {
 
     uint public constant FACTOR = 1e18;
 
-    event Supply(address user, uint amount);
-    event Redeem(address user, uint amount);
-    event Borrow(address user, uint amount);
-    event PayBorrow(address user, uint amount);
-    event LiquidateBorrow(address borrower, uint amount, address liquidator, address collateralMarket, uint collateralAmount);
+    event Supply(address indexed user, uint amount);
+    event Redeem(address indexed user, uint amount);
+    event Borrow(address indexed user, uint amount);
+    event PayBorrow(address indexed user, uint amount);
+    event LiquidateBorrow(address indexed borrower, uint amount, address indexed liquidator, address collateralMarket, uint collateralAmount);
 
     constructor(ERC20 _token, uint _baseBorrowAnnualRate, uint _blocksPerYear, uint _utilizationRateFraction) public {
         require(ERC20(_token).totalSupply() >= 0);
@@ -214,7 +214,7 @@ contract Market is MarketInterface {
         borrowSnapshot.interestIndex = borrowIndex;
 
         totalBorrows = totalBorrows.add(amount);
-        
+
         emit Borrow(msg.sender, amount);
     }
 
@@ -280,11 +280,11 @@ contract Market is MarketInterface {
     function payBorrow(uint amount) public {
         uint paid;
         uint additional;
-        
+
         (paid, additional) = payBorrowInternal(msg.sender, msg.sender, amount);
-        
+
         emit PayBorrow(msg.sender, paid);
-        
+
         if (additional > 0)
             emit Supply(msg.sender, additional);
     }
@@ -315,35 +315,35 @@ contract Market is MarketInterface {
 
         if (additional > 0)
             supplyInternal(payer, additional);
-            
+
         return (amount, additional);
     }
-    
+
     function liquidateBorrow(address borrower, uint amount, MarketInterface collateralMarket) public {
         require(amount > 0);
         require(borrower != msg.sender);
-        
+
         accrueInterest();
         collateralMarket.accrueInterest();
 
         uint debt = updatedBorrowBy(borrower);
-        
+
         require(debt >= amount);
         require(token.balanceOf(msg.sender) >= amount);
-        
+
         uint collateralAmount = controller.liquidateCollateral(borrower, msg.sender, amount, collateralMarket);
 
         uint paid;
         uint additional;
 
         (paid, additional) = payBorrowInternal(msg.sender, borrower, amount);
-        
+
         emit LiquidateBorrow(borrower, paid, msg.sender, address(collateralMarket), collateralAmount);
-        
+
         if (additional > 0)
             emit Supply(msg.sender, additional);
     }
-    
+
     function transferTo(address sender, address receiver, uint amount) public onlyController {
         require(amount > 0);
         redeemInternal(sender, receiver, amount);
