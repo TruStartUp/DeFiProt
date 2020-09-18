@@ -22,6 +22,7 @@ contract Market is MarketInterface {
     uint public totalBorrows;
     uint public baseBorrowRate;
     uint public utilizationRateFraction;
+    uint public deployBlock;
 
     uint public blocksPerYear;
 
@@ -56,6 +57,7 @@ contract Market is MarketInterface {
         baseBorrowRate = _baseBorrowAnnualRate.div(_blocksPerYear);
         accrualBlockNumber = block.number;
         utilizationRateFraction = _utilizationRateFraction.div(_blocksPerYear);
+        deployBlock = block.number;
     }
 
     modifier onlyOwner() {

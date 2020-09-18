@@ -17,9 +17,11 @@ contract Controller {
     uint public collateralFactor;
     uint public liquidationFactor;
     uint public constant MANTISSA = 1e6;
+    uint public deployBlock;
 
     constructor() public {
         owner = msg.sender;
+        deployBlock = block.number;
     }
 
     modifier onlyOwner() {
@@ -83,14 +85,14 @@ contract Controller {
 
         return calculateHealthIndex(supplyValue, borrowValue);
     }
-    
+
     function calculateHealthIndex(uint supplyValue, uint borrowValue) internal view returns (uint) {
         if (supplyValue == 0 || borrowValue == 0)
             return 0;
 
         borrowValue = borrowValue.mul(liquidationFactor.add(MANTISSA));
         borrowValue = borrowValue.div(MANTISSA);
-        
+
         return supplyValue.mul(MANTISSA).div(borrowValue);
     }
 
@@ -98,35 +100,35 @@ contract Controller {
         for (uint k = 0; k < marketList.length; k++) {
             MarketInterface market = MarketInterface(marketList[k]);
             uint price = prices[marketList[k]];
-            
+
             supplyValue = supplyValue.add(market.updatedSupplyOf(account).mul(price));
             borrowValue = borrowValue.add(market.updatedBorrowBy(account).mul(price));
         }
     }
-    
+
     function liquidateCollateral(address borrower, address liquidator, uint amount, MarketInterface collateralMarket) public onlyMarket returns (uint collateralAmount)  {
-        uint price = prices[msg.sender];        
+        uint price = prices[msg.sender];
         require(price > 0);
 
-        uint collateralPrice = prices[address(collateralMarket)];        
+        uint collateralPrice = prices[address(collateralMarket)];
         require(collateralPrice > 0);
-        
+
         uint supplyValue;
         uint borrowValue;
 
         (supplyValue, borrowValue) = getAccountValues(borrower);
         require(borrowValue > 0);
-        
+
         uint healthIndex = calculateHealthIndex(supplyValue, borrowValue);
-        
+
         require(healthIndex <= MANTISSA);
-        
+
         uint liquidationValue = amount.mul(price);
         uint liquidationPercentage = liquidationValue.mul(MANTISSA).div(borrowValue);
         uint collateralValue = supplyValue.mul(liquidationPercentage).div(MANTISSA);
-        
+
         collateralAmount = collateralValue.div(collateralPrice);
-        
+
         collateralMarket.transferTo(borrower, liquidator, collateralAmount);
     }
 }

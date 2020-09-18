@@ -3,6 +3,7 @@ const Market = artifacts.require('./Market.sol');
 const Token = artifacts.require('./test/FaucetToken.sol');
 const Controller = artifacts.require('./Controller.sol');
 const NonMarket = artifacts.require('./test/NonMarket.sol');
+const ControllerJSON = require('../build/contracts/Controller.json');
 
 const expectThrow = require('./utils').expectThrow;
 
@@ -37,6 +38,21 @@ contract('Controller', function (accounts) {
             this.token = await Token.new(1000000, "Token", 0, "TOK");
             this.market = await Market.new(this.token.address, ANNUAL_RATE, BLOCKS_PER_YEAR, UTILIZATION_RATE_FRACTION);
             this.controller = await Controller.new();
+        });
+
+        it('deploy block', async function () {
+            const [from] = await web3.eth.getAccounts();
+            const c = new web3.eth.Contract(ControllerJSON.abi);
+            const deployController = c.deploy({data: ControllerJSON.bytecode});
+
+            const tx = await web3.eth.sendTransaction({
+                from,
+                data: ControllerJSON.bytecode,
+                gas: await deployController.estimateGas({from}),
+            });
+            const ctrlInstance = new web3.eth.Contract(ControllerJSON.abi, tx.contractAddress);
+            const deployBlock = await ctrlInstance.methods.deployBlock().call();
+            assert.equal(deployBlock, tx.blockNumber);
         });
 
         it('mantissa', async function () {
@@ -195,10 +211,10 @@ contract('Controller', function (accounts) {
             await this.controller.setCollateralFactor(1 * MANTISSA);
             await this.controller.setLiquidationFactor(MANTISSA / 2);
         });
-        
+
         it('initial health factor', async function () {
             const factor = await this.controller.getAccountHealth(bob);
-            
+
             assert.equal(factor, 0);
         });
 
