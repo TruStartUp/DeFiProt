@@ -208,7 +208,7 @@ contract Market is MarketInterface {
             borrowSnapshot.interestIndex = borrowIndex;
         }
 
-        require(controller.getAccountLiquidity(msg.sender) >= controller.prices(address(this)).mul(amount).mul(2), "Not enough account liquidity");
+        require(controller.getAccountLiquidity(msg.sender) >= controller.prices(address(this)).div(controller.MANTISSA()).mul(amount).mul(2), "Not enough account liquidity");
 
         require(token.transfer(msg.sender, amount), "No enough tokens to borrow");
 

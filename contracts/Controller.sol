@@ -49,7 +49,7 @@ contract Controller {
     function setPrice(address market, uint price) public onlyOwner {
         require(markets[market]);
 
-        prices[market] = price;
+        prices[market] = price.mul(MANTISSA);
     }
 
     function addMarket(address market) public onlyOwner {
@@ -99,7 +99,7 @@ contract Controller {
     function getAccountValues(address account) public view returns (uint supplyValue, uint borrowValue) {
         for (uint k = 0; k < marketList.length; k++) {
             MarketInterface market = MarketInterface(marketList[k]);
-            uint price = prices[marketList[k]];
+            uint price = prices[marketList[k]].div(MANTISSA);
 
             supplyValue = supplyValue.add(market.updatedSupplyOf(account).mul(price));
             borrowValue = borrowValue.add(market.updatedBorrowBy(account).mul(price));
@@ -107,10 +107,10 @@ contract Controller {
     }
 
     function liquidateCollateral(address borrower, address liquidator, uint amount, MarketInterface collateralMarket) public onlyMarket returns (uint collateralAmount)  {
-        uint price = prices[msg.sender];
+        uint price = prices[msg.sender].div(MANTISSA);
         require(price > 0);
 
-        uint collateralPrice = prices[address(collateralMarket)];
+        uint collateralPrice = prices[address(collateralMarket)].div(MANTISSA);
         require(collateralPrice > 0);
 
         uint supplyValue;
