@@ -6,7 +6,8 @@
   "scripts": {
     "preinstall": "npx npm-force-resolutions",
     "test": "truffle test",
-    "compile": "truffle compile"
+    "compile": "truffle compile",
+    "build": "cp -r build/contracts ../defiapp"
   },
   "keywords": [
     "defi"
