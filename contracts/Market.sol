@@ -148,6 +148,9 @@ contract Market is MarketInterface {
     }
 
     function supplyInternal(address supplier, uint amount) internal {
+        // TODO BorrowSnapshot storage borrowSnapshot = borrows[supplier];
+        // TODO require(borrowSnapshot.principal == 0, "Active loan on market");
+
         // TODO check msg.sender != this
         require(token.transferFrom(supplier, address(this), amount), "No enough tokens");
 
@@ -208,7 +211,7 @@ contract Market is MarketInterface {
             borrowSnapshot.interestIndex = borrowIndex;
         }
 
-        require(controller.getAccountLiquidity(msg.sender) >= controller.prices(address(this)).div(controller.MANTISSA()).mul(amount).mul(2), "Not enough account liquidity");
+        require(controller.getAccountLiquidity(msg.sender) >= (controller.prices(address(this)).div(controller.MANTISSA())).mul(amount).mul(2), "Not enough account liquidity");
 
         require(token.transfer(msg.sender, amount), "No enough tokens to borrow");
 
@@ -239,6 +242,11 @@ contract Market is MarketInterface {
         uint blockDelta = newBlockNumber - accrualBlockNumber;
 
         uint simpleInterestFactor = borrowRatePerBlock().mul(blockDelta);
+        // borrowRatePerBlock => getBorrowRate(getCash(), totalBorrows, 0);
+        // getBorrowRate => ur = utilizationRate(cash, borrowed, reserves);
+        //
+        // ur.mul(utilizationRateFraction).div(FACTOR).add(baseBorrowRate)
+        // simpleInterestFactor =
         uint interestAccumulated = simpleInterestFactor.mul(totalBorrows).div(FACTOR);
 
         newBorrowIndex = simpleInterestFactor.mul(borrowIndex).div(FACTOR).add(borrowIndex);

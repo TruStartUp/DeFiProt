@@ -7,7 +7,7 @@
     "preinstall": "npx npm-force-resolutions",
     "test": "truffle test",
     "compile": "truffle compile",
-    "build": "cp -r build/contracts ../defiapp"
+    "build": "cp -r build/contracts ../trubankapp/src/"
   },
   "keywords": [
     "defi"
@@ -15,6 +15,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@truffle/hdwallet-provider": "^1.2.1",
     "minimist": "^1.2.5",
     "truffle": "5.1.14"
   },
