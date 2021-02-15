@@ -474,6 +474,14 @@ contract('Market', function (accounts) {
             assert.ok(totalBorrows > 2000);
             assert.equal(totalBorrows, borrowed);
         });
+
+        it('should not allow borrower to be able to borrow and repay in the same block')
+
+        it('should not allow a user supply on market in which has an active loan')
+            // await this.market2.borrow(100, { from: alice });
+            // await this.market2.supply(100, { from: alice })
+            // expectThrow(this.market2.supply(100, { from: alice }));
+        // })
     });
 
     describe('pay borrow', function () {

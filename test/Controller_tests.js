@@ -160,11 +160,11 @@ contract('Controller', function (accounts) {
 
         it('set asset price', async function () {
             await this.controller.addMarket(this.market.address);
-            await this.controller.setPrice(this.market.address, 100);
+            await this.controller.setPrice(this.market.address, 100 * MANTISSA);
 
             const result = await this.controller.prices(this.market.address);
 
-            assert.equal(result, 100);
+            assert.equal(result, 100 * MANTISSA);
         });
 
         it('only owner can set asset price', async function () {

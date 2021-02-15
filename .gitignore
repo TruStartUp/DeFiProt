@@ -68,6 +68,10 @@ package-lock.json
 # *.iml
 # *.ipr
 
+contracts/*.js
+contracts/*.json
+secret.json
+
 # CMake
 cmake-build-*/
 
